@@ -3,27 +3,25 @@
         "/data/eventContext": {
             "/associateOID": {
                 "optional": false,
-                "default": "IUHG8794UYF5"
+                "default": "AO0N1KA5856IQHM"
             }
         },
         "/data/transforms": [
             {
-                "/timeEntries/entryCode": {
-                    "codeList": {
-                        "listItems": [
-                            {
-                                "defaultIndicator": true,
-                                "foreignKey": "dayPeriodEntry",
-                                "shortName": "Présence intranet",
-                                "codeValue": "W_PRES"
-                            },
-                            {
-                                "foreignKey": "hoursEntry",
-                                "shortName": "Heures travaillées",
-                                "codeValue": "HRETRA"
-                            }
-                        ]
-                    },
+                "/timeEntries/comments/_changeCode": {
+                    "optional": false,
+                    "equals": [
+                        "add",
+                        "change"
+                    ]
+                },
+                "/timeEntries/_changeCode": {
+                    "optional": false,
+                    "equals": [
+                        "add"
+                    ]
+                },
+                "/timeEntries/endPeriod": {
                     "optional": false
                 },
                 "/timeEntries/entryTypeCode": {
@@ -34,7 +32,16 @@
                         }
                     ]
                 },
+                "/timeEntries/startPeriod/startDateTime": {
+                    "pattern": "^(?:(?:0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9])$",
+                    "optional": false
+                },
+                "/timeEntries/endPeriod/endDateTime": {
+                    "pattern": "^(?:(?:0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9])$",
+                    "optional": false
+                },
                 "/timeEntries/dayPeriodCode": {
+                    "optional": false,
                     "dependencies": {
                         "codeList": {
                             "oneOf": [
@@ -42,42 +49,128 @@
                                     "value": {
                                         "listItems": [
                                             {
-                                                "shortName": "Journée",
-                                                "codeValue": "J"
+                                                "codeValue": "J",
+                                                "shortName": "Journée"
                                             },
                                             {
-                                                "shortName": "Matin",
-                                                "codeValue": "M"
+                                                "codeValue": "M",
+                                                "shortName": "Matin"
                                             },
                                             {
-                                                "shortName": "Après-midi",
-                                                "codeValue": "A"
+                                                "codeValue": "A",
+                                                "shortName": "Après-midi"
                                             },
                                             {
-                                                "shortName": "Non présent",
-                                                "codeValue": "N"
+                                                "codeValue": "N",
+                                                "shortName": "Non présent"
                                             }
                                         ]
                                     },
                                     "attributes": {
                                         "/timeEntries/entryCode/codeValue": {
-                                            "pattern": "(^W_PRES)$"
+                                            "pattern": "(^____INTER1)$"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "listItems": [
+                                            {
+                                                "defaultIndicator": true,
+                                                "codeValue": "J",
+                                                "shortName": "Journée"
+                                            }
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "/timeEntries/entryCode/codeValue": {
+                                            "pattern": "(^__COMM__)$"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "/timeEntries/timeDuration": {
+                    "pattern": "^(?:(?:0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9])$",
+                    "optional": false
+                },
+                "/timeEntries/entryCode/codeValue": {
+                    "optional": false
+                },
+                "/timeEntries/entryCode": {
+                    "codeList": {
+                        "listItems": [
+                            {
+                                "defaultIndicator": true,
+                                "foreignKey": "dayPeriodEntry",
+                                "codeValue": "W_PRES",
+                                "shortName": "Présence intranet"
+                            },
+                            {
+                                "defaultIndicator": false,
+                                "foreignKey": "timePairEntry",
+                                "codeValue": "____TRAJM",
+                                "shortName": "Trajet Matin"
+                            },
+							{
+                                "foreignKey": "hoursEntry",
+                                "codeValue": "____HORTHE",
+                                "shortName": "Heures théoriques"
+                            },                            
+							{
+                                "foreignKey": "dayPeriodEntry_dailyComment",
+                                "codeValue": "__COMM__",
+                                "shortName": "Commentaire"
+                            },
+                            {
+                                "defaultIndicator": false,
+                                "foreignKey": "dayPeriodEntry_regularAllocation",
+                                "codeValue": "____INTER1",
+                                "shortName": "Intervention 1"
+                            },
+                            {
+                                "defaultIndicator": false,
+                                "foreignKey": "hoursEntry_regularAllocation",
+                                "codeValue": "____INTER2",
+                                "shortName": "Intervention 2"
+                            },
+                            {
+                                "defaultIndicator": false,
+                                "foreignKey": "timePairEntry_regularAllocation",
+                                "codeValue": "____INTER3",
+                                "shortName": "Intervention 3"
+                            }							
+                        ]
+                    },
+                    "optional": false
+                },
+                "/timeEntries/startPeriod": {
+                    "optional": false
+                },
+                "/timeEntries/laborAllocations": {
+                    "minItems": 0,
+                    "maxItems": 0,
+                    "hidden": true,
+                    "dependencies": {
+                        "hidden": {
+                            "oneOf": [
+                                {
+                                    "value": false,
+                                    "attributes": {
+                                        "/timeEntries/entryCode/codeValue": {
+                                            "pattern": "(^____INTER1|^____INTER2|^____INTER3|^____INTER4)$"
                                         }
                                     }
                                 }
                             ]
                         }
                     },
-                    "optional": false
-                },
-                "/timeEntries/timeDuration": {
-                    "optional": false,
-                    "pattern": "^(?:(?:0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9])$"
-                },
-                "/timeEntries/entryCode/codeValue": {
-                    "optional": false
+                    "dataType": "array"
                 },
                 "/timeEntries/laborAllocations/allocationCode": {
+                    "optional": true,
                     "dependencies": {
                         "codeList": {
                             "anyOf": [
@@ -86,14 +179,126 @@
                                         "links": [
                                             {
                                                 "method": "GET",
-                                                "href": "/codelists/time/v3/time-entry-management/labor-allocations?$filter=itemID%20eq%20'Lieu'",
+                                                "href": "/codelists/time/v3/time-entry-management/labor-allocations?$filter=itemID%20eq%20'Lieu---INTER1'",
                                                 "rel": "/adp/codelist"
                                             }
                                         ]
                                     },
                                     "attributes": {
                                         "/timeEntries/laborAllocations/allocationTypeCode/codeValue": {
-                                            "pattern": "^Lieu$"
+                                            "pattern": "^Lieu---INTER1$"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "links": [
+                                            {
+                                                "method": "GET",
+                                                "href": "/codelists/time/v3/time-entry-management/labor-allocations?$filter=itemID%20eq%20'Poste---INTER1'%20and%20foreignKey%20eq%20%7B#/timeEntries/laborAllocations/allocationCode/codeValue?$filter=foreignKey%20eq%20'Lieu---INTER1'%7D",
+                                                "rel": "/adp/codelist"
+                                            }
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "/timeEntries/laborAllocations/allocationTypeCode/codeValue": {
+                                            "pattern": "^Poste---INTER1$"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "links": [
+                                            {
+                                                "method": "GET",
+                                                "href": "/codelists/time/v3/time-entry-management/labor-allocations?$filter=itemID%20eq%20'Equip---INTER1'",
+                                                "rel": "/adp/codelist"
+                                            }
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "/timeEntries/laborAllocations/allocationTypeCode/codeValue": {
+                                            "pattern": "^Equip---INTER1$"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "links": [
+                                            {
+                                                "method": "GET",
+                                                "href": "/codelists/time/v3/time-entry-management/labor-allocations?$filter=itemID%20eq%20'Qualif---INTER1'",
+                                                "rel": "/adp/codelist"
+                                            }
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "/timeEntries/laborAllocations/allocationTypeCode/codeValue": {
+                                            "pattern": "^Qualif---INTER1$"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "links": [
+                                            {
+                                                "method": "GET",
+                                                "href": "/codelists/time/v3/time-entry-management/labor-allocations?$filter=itemID%20eq%20'Equip---INTER2'",
+                                                "rel": "/adp/codelist"
+                                            }
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "/timeEntries/laborAllocations/allocationTypeCode/codeValue": {
+                                            "pattern": "^Equip---INTER2$"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "links": [
+                                            {
+                                                "method": "GET",
+                                                "href": "/codelists/time/v3/time-entry-management/labor-allocations?$filter=itemID%20eq%20'Qualif---INTER2'",
+                                                "rel": "/adp/codelist"
+                                            }
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "/timeEntries/laborAllocations/allocationTypeCode/codeValue": {
+                                            "pattern": "^Qualif---INTER2$"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "links": [
+                                            {
+                                                "method": "GET",
+                                                "href": "/codelists/time/v3/time-entry-management/labor-allocations?$filter=itemID%20eq%20'Qualif---INTER3'",
+                                                "rel": "/adp/codelist"
+                                            }
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "/timeEntries/laborAllocations/allocationTypeCode/codeValue": {
+                                            "pattern": "^Qualif---INTER3$"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "links": [
+                                            {
+                                                "method": "GET",
+                                                "href": "/codelists/time/v3/time-entry-management/labor-allocations?$filter=itemID%20eq%20'Poste---INTER4'",
+                                                "rel": "/adp/codelist"
+                                            }
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "/timeEntries/laborAllocations/allocationTypeCode/codeValue": {
+                                            "pattern": "^Poste---INTER4$"
                                         }
                                     }
                                 }
@@ -105,41 +310,21 @@
                                     "value": false,
                                     "attributes": {
                                         "/timeEntries/laborAllocations/allocationTypeCode/codeValue": {
-                                            "pattern": "(^Lieu)$"
+                                            "pattern": "(^Equip---INTER1|^Qualif---INTER3)$"
                                         }
                                     }
                                 }
                             ]
                         }
                     },
-                    "optional": true,
                     "dataType": "object"
-                },
-                "/timeEntries/laborAllocations": {
-                    "dependencies": {
-                        "hidden": {
-                            "oneOf": [
-                                {
-                                    "value": false,
-                                    "attributes": {
-                                        "/timeEntries/entryCode/codeValue": {
-                                            "pattern": "(^HRETRA)$"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "minItems": 0,
-                    "maxItems": 1,
-                    "hidden": true,
-                    "dataType": "array"
                 },
                 "/timeEntries/laborAllocations/allocationCode/codeValue": {
                     "optional": false,
                     "dataType": "string"
                 },
                 "/timeEntries/laborAllocations/allocationTypeCode": {
+                    "optional": false,
                     "dependencies": {
                         "codeList": {
                             "anyOf": [
@@ -147,22 +332,102 @@
                                     "value": {
                                         "listItems": [
                                             {
-                                                "shortName": "__LIEU__",
-                                                "codeValue": "Lieu"
+                                                "codeValue": "Lieu---INTER1",
+                                                "shortName": "Lieu"
+                                            },
+                                            {
+                                                "codeValue": "Poste---INTER1",
+                                                "shortName": "Poste"
+                                            },
+                                            {
+                                                "codeValue": "Equip---INTER1",
+                                                "shortName": "Equipe"
+                                            },
+                                            {
+                                                "codeValue": "Qualif---INTER1",
+                                                "shortName": "Qualification"
                                             }
                                         ]
                                     },
                                     "attributes": {
                                         "/timeEntries/entryCode/codeValue": {
-                                            "pattern": "(^HRETRA)$"
+                                            "pattern": "(^____INTER1)$"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "listItems": [
+                                            {
+                                                "codeValue": "Equip---INTER2",
+                                                "shortName": "Equipe"
+                                            },
+                                            {
+                                                "codeValue": "Qualif---INTER2",
+                                                "shortName": "Qualification"
+                                            }
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "/timeEntries/entryCode/codeValue": {
+                                            "pattern": "(^____INTER2)$"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "listItems": [
+                                            {
+                                                "codeValue": "Qualif---INTER3",
+                                                "shortName": "Qualification"
+                                            }
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "/timeEntries/entryCode/codeValue": {
+                                            "pattern": "(^____INTER3)$"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "listItems": [
+                                            {
+                                                "codeValue": "Poste---INTER4",
+                                                "shortName": "Poste"
+                                            }
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "/timeEntries/entryCode/codeValue": {
+                                            "pattern": "(^____INTER4)$"
                                         }
                                     }
                                 }
                             ]
                         }
                     },
-                    "optional": false,
                     "dataType": "object"
+                },
+                "/timeEntries/comments": {
+                    "dependencies": {
+                        "hidden": {
+                            "oneOf": [
+                                {
+                                    "value": false,
+                                    "attributes": {
+                                        "/timeEntries/entryCode/codeValue": {
+                                            "pattern": "(^____INTER1|^____INTER2|^____INTER3|^____INTER4)$"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "/timeEntries/comments/textValue": {
+                    "optional": false,
+                    "maxLength": 128
                 }
             }
         ],
